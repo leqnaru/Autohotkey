@@ -14,21 +14,29 @@ There was included a fail-safe to check if the place was already marked or not, 
 
 
 # New Outlook email fill with Word Template
-**Goal**
+**Goal**\
 To quickly select a template from different Word documents and put it on a new Outlook email
 
-**Overall Process**
+**Overall Process**\
 First there is a verification to run Outlook as Administrator to avoid some possible errors of privileges while using COM. In the user desktop, there will be different shortcuts that each one of them point to a specific Word document.\
 Where the user selects one shortcut, it can do it normally or double-clicking it while holding the Shift key to open the document to modify it instead of launching the main process. The main process first connect to Word through COM, open the corresponding document, copy all of the contents and close the document.\
-Then it connects to Outlook through COM and by using the command "Outlook.Application.CreateItem(0)" and "Email.Display" we launch a new email window. Then it navigates to focus on the body area and paste the contents of the template there.\
+Then it connects to Outlook through COM and by using the command
+~~~
+Outlook.Application.CreateItem(0)
+~~~
+And this to launch a new email window
+~~~ 
+Email.Display
+~~~
+Then it navigates to focus on the body area and paste the contents of the template there.\
 There is an additional script that validates the shortcuts for the templates, by having a predefined folder where the Word documents are, then it verify if the shortcut already exists on the desktop, if not, it creates a new one.\
 To differ the target document to be opened, in the shortcuts, in the Target field, there is passed an argument that serves as differentiator where the main script looks for its value and execute the main process.
 
 
 # Find matches in a web table column
-**Goal**
+**Goal**\
 Find values of a table column to know if there is a match or not with values on a text file and create an Excel sheet with the results
-**Overall Process**
+**Overall Process**\
 There is a text file that contains numbers in each line. Those numbers are the ones we want to keep track on a web table column to see if they are there (this means they are unavailable) or not (if not, they are available), they represent packages that are being transported through specific doors and the values change every minute.\
 Here it is used Selenium and Chrome. Like most of web scrapping development, first the values and correct pointers need to be discovered by going into the Console panel on Chrome (I prefer using Xpath over any other method to locate web elements; to me it's much more robust and reliable).\
 After the XPaths are located, it is used this command 
@@ -60,9 +68,9 @@ Finally, the Excel file is saved and the file is ready to open, now the process 
 
 
 # Restrict the use of apps by time per day and a random maximum limit number
-**Goal**
+**Goal**\
 Keep track of the time an app or website is being used, use an INI file to store the values and when reach a random maximum number, close the app and reset the counters on the next day
-**Overall Process**
+**Overall Process**\
 For this, it was used a nested array that will contain the data of the target apps and websites (like ID, WinTitle, Counters, Limit).\
 The array was designed so it can loop through all the values for each app and monitor the time values in the most reduced way.\
 When the script starts it will launch a Timer with 1-second interval. It will then use a For-Loop using the main array, inside it, first it reads and verifies that the stored main date is different from the current date. If they are different, it means the day changed, and then it will reset the counters and reach limit.\
@@ -74,15 +82,15 @@ If the result is positive, it will then close the app and set the "limit_reach" 
 
 
 # Use Neutron.ahk to create a UI to send data triggered by hotkeys to a Firebase database
-**Goal**
+**Goal**\
 Login with user credentials in a Firebase database within a Neutron window and depending hotkeys triggered, send data to specific parts of the database by using REST API's
-**Notes**
+**Notes**\
 * There was used a custom version of "localStorage" to be able to pass data between pages
 * A Neutron function was modified to use the "localStorage" easily
 * The user must be logged in order to be able to send the data with the hotkeys
 * This is a desktop complementation for a website called Callouts Evolved. Website: https://www.calloutsevolved.com/. This is a gaming team communication enhacement tool
 
-Overall Process:
+**Overall Process**\
 Neutron.ahk was used to create a login and a main page (that shows after login). There was done a Firebase setup to be able to conenct with the cloud database and validate the user credentials. After they are validated, the main page is displayed and now the user can use the various hotkeys to send specific data to Firebase.\
 The hotkeys are set to send strings like "Attack", "Defend", "Retreat" and others and are sent to the session where the user is currently connected to. To know the session, the UID that provides Firebase was used.\
 When the script starts, there is a creation of labeled Hotkeys, by using the "Hotkey" command, this is to enable flexibility to change the hotkeys assignements by the user fast without entering to the code.\
