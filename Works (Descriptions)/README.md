@@ -4,10 +4,10 @@ My goal with this is you can see many ways in what Autohotkey can help and get s
 Some of the works I've done for people include the following:
 
 # Starring Google Maps places
-**Goal**
+**Goal**\
 Mark and verify all the links in the CSV as a Starred place
 
-**Overall Process**
+**Overall Process**\
 Looping through a CSV which contains a link for specific places in Google Maps. 
 By using the FindText library, it is searched for 5 key elements to complete the process to mark the palce on the link as a Starred Place.
 There was included a fail-safe to check if the place was already marked or not, if so, continue with the next link and stop until all the links in the CSV are opened and marked.
