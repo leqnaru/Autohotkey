@@ -3,6 +3,74 @@ My goal with this is you can see many ways in what Autohotkey can help and get s
 
 Some of the works I've done for people include the following:
 
+
+
+# Categorize types of files into specific folders by metadata and extension
+**Goal**\
+Move specific types of file to a specific folder when they are added to a folder
+**Overall Process**\
+The script uses the "WatchFolder" library to keep track of the new added files in a folder. In the real-application, the folder targeted was the Downloads folder in the user PC. Note that this library works best then there is a single file added, sometimes it have troubles when multiple files are added at the same time, but not always.\
+When a new file is added to the target folder, it start a process to categorize it. It uses a function to retrieve the metadata values and narrowing the result to get the "Kind" metadata value, which is the one used to differentiate the type of file (Pictures, Music, Video). 
+~~~
+attributes_selection := [11] ; 11, Kind
+file_metadata := GetDetailsOf_Targeted_Data(new_item_path, attributes_selection)
+
+if (file_metadata["Kind"] = "Picture") {
+
+    pictures_folder := root_folder "\Pictures\"                
+    if (!Check_Folder(root_folder, "Pictures")) {
+        FileCreateDir, %pictures_folder%
+    }
+
+    FileMove, %new_item_path%,  %pictures_folder%
+    Check_Duplicate(ErrorLevel)
+}
+
+else if (file_metadata["Kind"] = "Music") {
+    music_folder := root_folder "\Music\"
+    if (!Check_Folder(root_folder, "Music")) {
+        FileCreateDir, %music_folder%
+    }
+    Musics_folder := root_folder "\Music\"
+    FileMove, %new_item_path%,  %music_folder%
+    Check_Duplicate(ErrorLevel)
+}   
+[...]
+~~~
+
+But also, the script can categorize the file regarding their extension, like this:
+~~~
+if (OutExtension = "doc" || OutExtension = "docx") {
+    Word_folder := root_folder "\Word\"
+    if (!Check_Folder(root_folder, "Word")) {
+        FileCreateDir, %Word_folder%
+    }
+    FileMove, %new_item_path%,  %Word_folder%
+    Check_Duplicate(ErrorLevel)
+}
+else if (OutExtension = "psd") {
+    Photoshop_folder := root_folder "\Photoshop\"
+    if (!Check_Folder(root_folder, "Photoshop")) {
+        FileCreateDir, %Photoshop_folder%
+    }
+    FileMove, %new_item_path%,  %Photoshop_folder%
+    Check_Duplicate(ErrorLevel)
+}
+else if (OutExtension = "rar") {
+    Rar_folder := root_folder "\Rar\"
+    if (!Check_Folder(root_folder, "Rar")) {
+        FileCreateDir, %Rar_folder%
+    }
+    FileMove, %new_item_path%,  %Rar_folder%
+    Check_Duplicate(ErrorLevel)
+}
+[...]
+~~~
+
+This scripts provides a great folder and file structure, and it can be modified to categorize by other means, like using Regular Expressions to match strings in the filename, size, video lenght, video framerate, image resolution or other metadata propieties
+
+
+
 # Starring Google Maps places
 **Goal**\
 Mark and verify all the links in the CSV as a Starred place
@@ -142,10 +210,9 @@ oWhr.Send(Body)
 The update on the cloud database is almost instantaneity, from 1 to 3 seconds maximum
 
 
-
 # Track new circles coming from the right in a graph
 **Goal**\
-Trigger multiples clicks after a new circle appears from the left
+Trigger multiples clicks after a new circle appears from the left.\
 
 **Overall Process**\
 In a graph, regarding variable values, there are circles that appear over time and are going few pixels to the right as time passes. They indicate a specific value the user wants to keep track of.\
@@ -153,7 +220,6 @@ The script uses the FindText library to target the circle reference as an image.
 First, it is verified if Google Chrome is running, if so, there is a calculation of the area that the script will work with regarding the proportions of the Google Chrome window and then doing some adjustments to fit the work area.\
 This are integer (some with fixed adjustments) and flag variables that are used across the script to use in further calculations
 ~~~
-
 WinGetPos, X, Y, Width, Height, ahk_exe chrome.exe
 Y := Y + 100      
 total_Area := [X, Y, X + Width, Y + Height - 50]
@@ -213,7 +279,7 @@ After the results, it will then take action depending if a new circle was found 
 for main_key, main_value in main_circle_coords {
     Check_For_Current_Circles()
     Sleep 500 
-    if (IsObject(new_circleRU := Check_Right_Up([main_value[1], main_value[2]]))) {                    
+    if (IsObject(new_circleRU := Check_Right_Up([main_value[1], main_value[2]]))) {                   
      
         if (!IsCircleDuplicated(new_circle_RU)) {  
             Check_For_Current_Circles()       
@@ -253,9 +319,10 @@ Check_Right_UP(current_circle_coord){
 }
 ~~~
 
-There is a helper function "Check_For_Current_Circles" that is called in many stages of the script to validate the curent circles. If one circle is not located anymore, it will decrease by one the "circles_counter" and remove its coordinates on the "main_circle_coords" array to stop looking for it. Inside this function there are other types of calculations that serve to properly conclude the coordinates of the circles 
-The "IsCircleDuplicated()" funcion exist to avoid duplicates, since the circles are being moved to the left overtime. It consist of various math calculations to have a threshold of where a circle can be considered as duplicate or not within the original horizontal line
+There is a helper function "Check_For_Current_Circles" that is called in many stages of the script to validate the curent circles. If one circle is not located anymore, it will decrease by one the "circles_counter" and remove its coordinates on the "main_circle_coords" array to stop looking for it. Inside this function there are other types of calculations that serve to properly conclude the coordinates of the circles.\
+The "IsCircleDuplicated()" funcion exist to avoid duplicates, since the circles are being moved to the left overtime. It consist of various math calculations to have a threshold of where a circle can be considered as duplicate or not within the original horizontal line.\
 In other words, the scripts looks for new circles that appear on the right side of the first circle. When a new circle is found, it is added to an array with its coordinates, a counter is increased by one and it will perform the clicking actions. The script will omit those circles that was already spotted by doing calculations using their coordinates to not confuse them as new circles, because their current coordinates will change overtime since they are being moved to the left in the graph
+
 
 
 
