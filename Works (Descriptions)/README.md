@@ -99,6 +99,79 @@ There is an additional script that validates the shortcuts for the templates, by
 To differ the target document to be opened, in the shortcuts, in the Target field, there is passed an argument that serves as differentiator where the main script looks for its value and execute the main process.
 
 
+# Display a message after 7 days, as a expiration date measure
+**Goal**\
+Keep track of the days after the first execution of the script and display a message
+
+**Overall Process**\
+This is a more an add-on to a main script, where the function "TriggerTrailStatus()" is called when the user wants to start or check the trail of the software.\
+The scripts uses an INI file to keep track of the date values. When this function is called, it will eaither create the default INI if it doesn't exist or check for the trial status.
+~~~
+TriggerTrailStatus() {
+    global
+
+    INITrialTrackingVariables()
+    
+    if (!FileExist(ini_full_path)) { ; If the INI doesn't exist, it means that it's the first run. So create the INI
+        CreateDefaultINI()
+    }
+    else {
+        CheckForTrialStatus()
+    }   
+}
+~~~
+
+If the INI doesn't exist, it will be created one from scratch within the code, like this
+
+~~~
+CreateDefaultINI(){
+    global
+
+    first_day_run := A_YDay ; Get the file
+    target_trail_end_day := first_day_run + 7 ; Calculating the end day. It will be 7 days ahead the first day
+
+    INI_Structure = ; Default structure of the INI
+    (Ltrim
+        [TrialDayTracking]
+        first_day = %first_day_run%
+        end_trail_day = %target_trail_end_day%
+    )
+
+    Transform, INI_Final_Structure, Deref, %INI_Structure% ; Set the value from "first_day_run" within the string. This to optimize the code and ommit a further INIRead and INIWrite. Same for "target_trail_end_day"
+
+    FileDelete, % ini_full_path ; this is just a safebelt, in case that there is any problem to locate the ini. This will delete the ini file in order to start fresh
+    FileAppend, % INI_Structure, % ini_full_path ; Load the structure to the INI file
+    FileSetAttrib, ^H, %ini_full_path% ; Turn it off right after creation. "^" means Toggle, and because after creation the file is always visible (No Hidden), toggle the state from "On" to "Off"
+}
+~~~
+
+If the INI file exists, it will read the values from it and compare if the days of trial is reached.\
+~~~
+CheckForTrialStatus(){
+    global
+
+    IniRead, end_trial_day_value, %ini_full_path%, TrialDayTracking, end_trail_day ; Reading the INI and retrieving the end day of the trial
+    current_day := A_YDay ; Get the current day
+
+    if (current_day > end_trial_day_value) { ; Check if the current day is bigger than the end trial date
+        ; Action if the script is 7 days older
+        MsgBox %  "Trial Expired"  ; Alert to show the user its trial ended
+
+        FileDelete, %ini_full_path% ; This will delete the current INI if the end day is reached
+
+        SplitPath, A_ScriptFullPath,, script_folder ; This retrieve the folder where the script is to the "script_folder" variable
+        FileRemoveDir, %script_folder%, 1 ; This will delete the folder where the script is located. The "1" is for deleting subfolders (and even if the folder doesn't contains subfolders, keep it, sometimes without the "1" it doesn't work properly)
+    }
+    else {
+        ; Action if the script is less than 7 days older
+        MsgBox %  "You have " end_trial_day_value - current_day " days left before the trial ends."  ; This will display the days left until it reaches the end day
+    }    
+}
+~~~
+
+The objective is to mimic a expiration date security measure of a script in order to avoid its usage after 7 days.\
+
+
 # Find matches in a web table column
 **Goal**\
 Find values of a table column to know if there is a match or not with values on a text file and create an Excel sheet with the results
