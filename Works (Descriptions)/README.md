@@ -7,7 +7,7 @@ Some of the works I've done for people include the following:
 
 # Categorize types of files into specific folders by metadata and extension
 **Goal**\
-Move specific types of file to a specific folder when they are added to a folder
+Move specific types of file to a specific folder when they are added to a folder.\
 **Overall Process**\
 The script uses the "WatchFolder" library to keep track of the new added files in a folder. In the real-application, the folder targeted was the Downloads folder in the user PC. Note that this library works best then there is a single file added, sometimes it have troubles when multiple files are added at the same time, but not always.\
 When a new file is added to the target folder, it start a process to categorize it. It uses a function to retrieve the metadata values and narrowing the result to get the "Kind" metadata value, which is the one used to differentiate the type of file (Pictures, Music, Video). 
@@ -16,12 +16,10 @@ attributes_selection := [11] ; 11, Kind
 file_metadata := GetDetailsOf_Targeted_Data(new_item_path, attributes_selection)
 
 if (file_metadata["Kind"] = "Picture") {
-
     pictures_folder := root_folder "\Pictures\"                
     if (!Check_Folder(root_folder, "Pictures")) {
         FileCreateDir, %pictures_folder%
     }
-
     FileMove, %new_item_path%,  %pictures_folder%
     Check_Duplicate(ErrorLevel)
 }
@@ -323,6 +321,64 @@ There is a helper function "Check_For_Current_Circles" that is called in many st
 The "IsCircleDuplicated()" funcion exist to avoid duplicates, since the circles are being moved to the left overtime. It consist of various math calculations to have a threshold of where a circle can be considered as duplicate or not within the original horizontal line.\
 In other words, the scripts looks for new circles that appear on the right side of the first circle. When a new circle is found, it is added to an array with its coordinates, a counter is increased by one and it will perform the clicking actions. The script will omit those circles that was already spotted by doing calculations using their coordinates to not confuse them as new circles, because their current coordinates will change overtime since they are being moved to the left in the graph
 
+
+
+# Change Font Type and Opacity quickly in Adobe Illustrator
+**Goal**\
+Pressing different hotkeys that are assigned for specific Font Types and a hotkey to display the opacity slider quickly
+
+**Overall Process**\
+It is used the "FindText" library for key image references on Illustrator to perform clicks and focus elements.
+Each hotkey is assigned to trigger a function that will send a specific parameter to differ from the target Font:
+~~~
+A12_Bold:
+Change_Font_Type("Bold")
+return
+
+A12_Ultra:
+Change_Font_Type("Ultra")
+return
+
+A12_Condensed:
+Change_Font_Type("Condensed")
+return
+[...]
+~~~
+
+Then the main process of the "FindText" to look for a reference is executed to click on the reference with some adjustment and send some keys to focus the edit box and send the corresponding Font Type.
+~~~
+Change_Font_Type(f_type){
+    MouseGetPos, Xo, Yo
+    Character_Option:="|<>*108$45.zDzzzzzw1zzztzzaDzzzDzts8E2010D9sT39VVtc30t0DaA8H39tY1c3200AzzzzzzzzzzzzzzzJJJJJJJI"
+    if (ok:=FindText(616-150000, 49-150000, 616+150000, 49+150000, 0, 0, Character_Option))
+    {
+        CoordMode, Mouse
+        Step_X_1 := ok.1.x, Step_Y_1:=ok.1.y, Comment:=ok.1.id
+        MouseClick, left, % Step_X_1 + 100, % Step_Y_1
+        Sleep 100 
+        Send {Tab}
+        Sleep 100 
+        Send %f_type%
+        Verify_Font(f_type)
+    }
+
+    MouseMove, %Xo%, %Yo%
+}
+~~~
+
+Finally, there is a "Verify_Font()" function to verify the Font actually have that Font Type option, since some Fonts are not compatible with those. If not, it will promt a message saying "Font Type not found".
+Regarding the Opacity slider, it is a similar process but there is 3 key references to look for and click. The last one is the actual slider image reference, and there it is send a "MouseClick" command with the "D" option, so it remains held down and wait for the Left Button key to be clicked.
+
+~~~
+if (ok:=FindText(Step_X_1, Step_Y_1 + Y_Offset_1, Step_X_1 + X_Offset_2, Step_Y_1 + Y_Offset_2, 0, 0, Opacity_Slider))
+{
+    CoordMode, Mouse
+    X:=ok.1.x, Y:=ok.1.y, Comment:=ok.1.id
+    MouseClick, left, %X%, %Y%,, , D
+    KeyWait, LButton, L
+
+}
+~~~
 
 
 
