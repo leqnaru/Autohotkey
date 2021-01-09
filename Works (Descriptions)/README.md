@@ -342,7 +342,6 @@ return
 A12_Condensed:
 Change_Font_Type("Condensed")
 return
-[...]
 ~~~
 
 Then the main process of the "FindText" to look for a reference is executed to click on the reference with some adjustment and send some keys to focus the edit box and send the corresponding Font Type.
@@ -361,7 +360,6 @@ Change_Font_Type(f_type){
         Send %f_type%
         Verify_Font(f_type)
     }
-
     MouseMove, %Xo%, %Yo%
 }
 ~~~
@@ -376,9 +374,91 @@ if (ok:=FindText(Step_X_1, Step_Y_1 + Y_Offset_1, Step_X_1 + X_Offset_2, Step_Y_
     X:=ok.1.x, Y:=ok.1.y, Comment:=ok.1.id
     MouseClick, left, %X%, %Y%,, , D
     KeyWait, LButton, L
-
 }
 ~~~
+
+
+# Create new reference in Obsidian app with the highlighted word in a specific header
+**Goal**\
+Create a reference (named after the highlighted word) and name of the current opened note in a target header
+
+**Overall Process**\
+The user highlights a reference with a structure like this "[[List Note|List 2]". The first process is to separate those two parts, the parts separated by the "|" (and sometimes it is "#" instead). For this, it is cleared the "[[" and "]]", any break line and using "StrSplit()" and store it in different variables, like this:
+
+~~~
+destination_format_first := StrReplace(destination_format, "[[")
+destination_format_first := StrReplace(destination_format_first, "]]")
+destination_format_first := StrReplace(destination_format_first, "`n")
+destination_format_first := StrReplace(destination_format_first, "`r")
+
+if (InStr(destination_format_first, "|")) {
+    destination_format_first_split := StrSplit(destination_format_first, "|")
+}
+else if (InStr(destination_format_first, "#")) {
+    destination_format_first_split := StrSplit(destination_format_first, "#")
+}
+
+target_note_file := destination_format_first_split[1]
+target_note_to_add := destination_format_first_split[2]
+~~~
+
+Now the current name of the note is retrieved by the function "GetActiveNoteTitle()" which sends a sequence of "Send" commands to get it and then others to open the target note.\
+After that, the target note is opened by sending some "Send" commands, then a process starts to copy the contents and analyze where to put the desired reference by locating the target header. To make this, all of the contents is copied to the clipboard and then it is added to an array to have more flexibilty regarding where to add the new refrence with precision (by using indexes).\
+~~~
+ContentToArray(received_content) {
+    temp_array := []    
+    Loop, Parse, received_content, `n, `r
+    {
+        temp_array.Push(A_LoopField)
+    }
+    return temp_array
+}
+~~~
+
+With the new array, then the scripts uses another function called "FindInContentArray()" and proceed to find the target header with a structure like "# List " (but can be lead by any number of hashtags, for example, "### List 3") by using a For-Loop and testing if the content line matches a Regex Expression
+~~~
+if (RegExMatch(content_line, "#\s" match "\s*$" , output_regex)) {
+    found_line := key
+    found := True
+}
+
+if (found) {
+    return found_line
+}
+~~~
+
+Then, when the header is found, it is used the index to scan ahead that index to look for the first empty line to add the reference there in order to avoid collision with other references put in place already
+~~~
+Loop, % received_content.Count() - received_index ; To not over-loop
+{
+    target_index := A_Index + received_index ; Starting in the found header index to scan ahead
+    if (received_content[target_index] = "" || received_content[target_index] = "- ") { ; Look for empty lines or lines with "- " to add the reference there
+        found_index := target_index
+        found := true
+        break
+    }
+}
+~~~
+
+Finally, the content is updated with the new reference injected inside the "UpdateWholeContent_Array()"
+~~~
+if (target_note_parent_index := FindInContentArray(content_in_array, target_note_to_add_reference_regex, "regex")) {
+    if (target_note_to_add_index := FindFirstOccurrenceReference_AfterIndex(content_in_array, target_note_parent_index)) {
+        content_in_array[target_note_to_add_index] := "- [[" last_note_title "]]"
+        content_in_array.InsertAt(target_note_to_add_index + 1, "") ; Substitute new line
+        UpdateWholeContent_Array(content_in_array)        
+    } 
+    else {
+        content_in_array[content_in_array.MaxIndex() + 1] := "- [[" last_note_title "]]"
+        UpdateWholeContent_Array(content_in_array)
+    }
+}
+else {
+    MsgBox %  "Not Target Header Located" 
+    return
+}
+~~~
+
 
 
 
