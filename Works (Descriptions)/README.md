@@ -1,8 +1,8 @@
 
 # Hello!
-This is a compilation of work I've done for other people and for myself. My goal with this is to provide you with ideas or Autohokey projects describing you the whole process and showing relevant code.
+This is a compilation of work I've done for other people and for myself. My goal with this is to provide you with ideas or Autohokey projects describing you the overall process and showing relevant code.
 I tried to write the most relevant and sumarized description of the processes that were done and implemented so you get an idea of the project.
-I hope you get anything out of this, either is an idea for your projects or any insights of development that were done to fullfil a goal.
+I hope you get any type of insight out of this or any idea for your projects with examples of development that was done to fullfil a goal.
 
 Notes:
 - "[...]" means there is extra code (often not relevant) above or below the displayed
