@@ -616,7 +616,7 @@ This was to easily visualize and differentiate each app, but this can be done al
 There was many tests to comprehend the manual process and be able to design it in a coded way. Inside the "SafeExit_Target()" function those steps were programmed involving mane windows-related and the Send commands with occasionally Sleep commands to avoid any crashes or conflicts.\
 Note that the apps differ in their way to save a project, they require different steps that need to be programmed and/or specific windows checks, but some are similar, that's why inside this function there are the variable "identifier" to identify the current working app
 Down here are extracts of the function to get an idea of what is inside
-
+~~~
 SafeExit_Target(identifier, se_target_wintitle, target_save_promt, target_save_dialog, target_save_folder){
     if (WinExist(se_target_wintitle)) {
         SetTitleMatchMode, 2
@@ -690,7 +690,7 @@ SafeExit_Target(identifier, se_target_wintitle, target_save_promt, target_save_d
                 }
 
 [...]
-
+~~~
 When the save file dialog appears, it is handled by the "Targeted_Save_In_Save_Dialog()" function, where it establishes first the target save folder and then it sets the filename depending if it exists and the mode
 ~~~
 [...]
@@ -707,7 +707,7 @@ if (directory) {
     Sleep 1000
 }    
 
-[....]
+[...]
 
 if (filename) {
     ControlFocus, Edit1, %save_dialog_wintitle% ; Filename
