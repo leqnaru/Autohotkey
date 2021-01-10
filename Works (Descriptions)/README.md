@@ -78,12 +78,12 @@ This scripts provides a great folder and file structure, and it can be modified 
 
 # Use Neutron.ahk to create a login page and send data triggered by hotkeys to a Firebase database
 **Goal**\
-Login with user credentials in a Firebase database within a Neutron window and depending hotkeys triggered, send data to specific parts of the database by using REST API's.\
+Login with user credentials in a Firebase database within a Neutron window and depending hotkeys triggered, send data to specific parts of the database by using REST API's.
 **Notes**.\
 * There was used a custom version of "localStorage" to be able to pass data between pages
 * A Neutron function was modified to use the "localStorage" easily
 * The user must be logged in order to be able to send the data with the hotkeys
-* This is a desktop complementation for a website called Callouts Evolved. Website: https://www.calloutsevolved.com/. This is a gaming team communication enhacement tool\
+* This is a desktop complementation for a website called Callouts Evolved. Website: https://www.calloutsevolved.com/. This is a gaming team communication enhacement tool.\
 
 **Overall Process**\
 Neutron.ahk was used to create a login and a main page (that shows after login). There was done a Firebase setup to be able to conenct with the cloud database and validate the user credentials. After they are validated, the main page is displayed and now the user can use the various hotkeys to send specific data to Firebase.\
