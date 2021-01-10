@@ -142,7 +142,7 @@ The update on the cloud database is almost instantaneity, from 1 to 3 seconds ma
 # Small scripts for Premiere Pro
 **Goal**\
 Enhance video editing workflow with some small scripts.\
-**Overall Process**\
+**Overall Process**
 1. This quick and seamless continuous move playhead to cursor is one of the scripts I most use. I practically use it almost 90% of the time I am editing.\
 Move the playhead to the cursor position continuously. While the Right Mouse Button is held down, the script will send the Move Playhead to Cursor shortcut (that is assigned within Premiere; if it is set to "Control + Shift + J" it will send those) and a small delay of 50ms to ensure estability. There is added a screen area restriction for the script to work only within the Timeline panel.\
 This is done by getting first the coordinates of the panel, then looking with a timer the current position of the mouse and restricting the activation of the hotkeys within the coordinates area (that form a rectangle) by using an "#If" context that will evaluate a flag and if the Premiere Pro window is active.
