@@ -207,7 +207,7 @@ return
 
 #If
 ~~~
-There is an altive version of this, which it needs to click once the Right Button and then click the Left Button to stop, this was reported to be more smooth.\
+There is an alternative version of the script, which it needs to click once the Right Button and then click the Left Button to stop, this was reported to be more smooth.\
 Here, it uses FindText to look for Snap Icon references (to get the Y coordinates to look for, because the Snap icon is vertically close to the position of the playhead), then it will send the Move Playhead to Cursor shortcut, use PixelSearch to click on the blue color (of the playhead) and send a ControlClick with the "D" option (to keep holding the click) and it will now work as if the user drags the playhead naturally, and then it will stop when the user clicks the Left Mouse Button to stop dragging.
 ~~~
 FT_Snap:="|<>**20$41.0000000000000000000000000000000000000z000007zU0000Q3U0000k3000017X00006Da0000AnA0000NaM0000nAk0001yTU0003An000000000000000000D3k0000000000000004"
