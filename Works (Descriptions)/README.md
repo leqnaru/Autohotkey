@@ -99,7 +99,7 @@ There is an additional script that validates the shortcuts for the templates, by
 To differ the target document to be opened, in the shortcuts, in the Target field, there is passed an argument that serves as differentiator where the main script looks for its value and execute the main process.
 
 
-# Display a message after 7 days, as a expiration date measure
+# Display a message after 7 days as a expiration date measure
 **Goal**\
 Keep track of the days after the first execution of the script and display a message
 
@@ -169,7 +169,7 @@ CheckForTrialStatus(){
 }
 ~~~
 
-The objective is to mimic a expiration date security measure of a script in order to avoid its usage after 7 days.\
+The objective is to mimic a expiration date security measure of a script in order to avoid its usage after 7 days.
 
 
 # Find matches in a web table column
@@ -534,7 +534,210 @@ else {
 
 
 
+# Exit apps safely by imitating a manual project save into a specific folder
+**Goal**\
+Save the current unsaved projects of apps with a specific filename after an IDLE time to trigger the main process
 
+
+**Overall Process**\
+This script is for multiple work computers at an office that sometimes are left open and need to save the current opened and unsaved projects and then shutdown the PC
+First off, there are main arrays that contain specific data for each app that will later use to easily manage the actions on an app
+~~~
+apps_wintitles := {camtasia: "ahk_exe CamtasiaStudio.exe", notepad: "ahk_exe notepad.exe", xmind: "ahk_exe XMind.exe", davinci_resolve: "ahk_exe Resolve.exe", illustrator: "ahk_exe Illustrator.exe", photoshop: "ahk_exe Photoshop.exe", audition: "ahk_exe Adobe Audition CC.exe"}
+save_prompts := {camtasia: "TechSmith Camtasia", notepad:  "Notepad", xmind: "XMind", davinci_resolve: "Message", illustrator: "Adobe Illustrator", photoshop: "Adobe Photoshop", audition: "Audition"}
+save_dialogs := {camtasia: "Save As", notepad: "Save As", xmind: "Save As", davinci_resolve: "Create New Project", illustrator: "Save As", photoshop: "Save As", audition: "Save As"}
+autosave_folders := {camtasia: A_MyDocuments "\Autosaves", notepad: A_MyDocuments "\Autosaves", xmind: A_MyDocuments "\Autosaves", davinci_resolve: A_MyDocuments "\Autosaves", illustrator: A_MyDocuments "\Autosaves", photoshop: A_MyDocuments "\Autosaves", audition: A_MyDocuments "\Autosaves"}
+~~~
+
+Then it validates the folders where the saved giles will be saved
+~~~
+Validate_Autosave_Folders(){
+    global
+
+    for key, folder in autosave_folders {
+        if (!FileExist(folder)) {
+            FileCreateDir, %folder%
+        }
+    }
+}
+~~~
+
+Now it will start a Timer, which is monitoring for the IDLE time using the "A_TimeIdle" variable first and then doing an hour of the day verification to trigger the main process or not.\
+The main process is restricted to work only after 10 pm (22 hours) and before 7 am (7 hours), those are stored in the main variables
+~~~
+timestamp_A := 22
+timestamp_B := 7
+msgbox_timer := 300 ; In seconds. 5 minutes
+idle_miliseseconds := 4800000 ; In ms. 80 minutes
+save_as_wintitle := "Save As"
+filename_suffix := " - autosave before shutdown"
+~~~
+
+The timer looks like this
+
+~~~
+Check_IDLE:
+If (A_TimeIdle > idle_miliseseconds){
+
+    FormatTime, current_hour, , H
+    FormatTime, current_minute, , m
+    FormatTime, current_seconds, , s
+
+    if (current_hour >= timestamp_A || current_hour <= timestamp_B) { 
+        Safe_Exit_Main()         
+    }
+}
+Return
+~~~
+
+The main process is within the "Safe_Exit_Main()" function, which also contains the "SafeExit_Target()" function to target the specific apps.\
+First it checks if the Camtasia Recorder process exists, if so, it means it typically recording the screen, so hibernate the PC instead of shutdown, otherwise, it continues
+~~~
+if (WinExist("ahk_exe CamRecorder.exe")) {
+    MsgBox, , % "Alert", % "Camtasia Recorder is running, proceeding to hibernate.", % 5
+
+    DllCall("PowrProf\SetSuspendState", "int", 1, "int", 0, "int", 0)
+    return
+}
+~~~
+
+For practical purposes, there was called a function that will be sent individual and hardcoded values from the apps, as shown below
+~~~
+SafeExit_Target("camtasia", apps_wintitles["camtasia"], save_prompts["camtasia"], save_dialogs["camtasia"], autosave_folders["camtasia"])
+SafeExit_Target("davinci_resolve", apps_wintitles["davinci_resolve"], save_prompts["davinci_resolve"], save_dialogs["davinci_resolve"], autosave_folders["davinci_resolve"])
+SafeExit_Target("notepad", apps_wintitles["notepad"], save_prompts["notepad"], save_dialogs["notepad"], autosave_folders["notepad"])
+SafeExit_Target("xmind", apps_wintitles["xmind"], save_prompts["xmind"], save_dialogs["xmind"], autosave_folders["xmind"])
+SafeExit_Target("illustrator", apps_wintitles["illustrator"], save_prompts["illustrator"], save_dialogs["illustrator"], autosave_folders["illustrator"])
+SafeExit_Target("photoshop", apps_wintitles["photoshop"], save_prompts["photoshop"], save_dialogs["photoshop"], autosave_folders["photoshop"])
+SafeExit_Target("audition", apps_wintitles["audition"], save_prompts["audition"], save_dialogs["audition"], autosave_folders["audition"])
+~~~
+
+This was to easily visualize and differentiate each app, but this can be done also using a For-Loop and a master array that will contain all the values, which is a shorter and quick way.\
+There was many tests to comprehend the manual process and be able to design it in a coded way. Inside the "SafeExit_Target()" function those steps were programmed involving mane windows-related and the Send commands with occasionally Sleep commands to avoid any crashes or conflicts.\
+Note that the apps differ in their way to save a project, they require different steps that need to be programmed and/or specific windows checks, but some are similar, that's why inside this function there are the variable "identifier" to identify the current working app
+Down here are extracts of the function to get an idea of what is inside
+
+SafeExit_Target(identifier, se_target_wintitle, target_save_promt, target_save_dialog, target_save_folder){
+    if (WinExist(se_target_wintitle)) {
+        SetTitleMatchMode, 2
+        WinActivate, % se_target_wintitle
+        WinWaitActive, % se_target_wintitle        
+
+        current_index := 0
+        Loop, 
+        {
+            if (A_Index = 1) {
+                current_index := A_Index
+            }
+            else {
+                current_index++
+            }
+            
+            if (Check_For_Promtpt(se_target_wintitle, target_save_promt)) {
+
+                WinActivate, % se_target_wintitle
+                WinWaitActive, % se_target_wintitle
+
+                ; To Save Dialog
+
+                if (identifier = "camtasia" || identifier = "notepad"|| identifier = "illustrator" || identifier = "photoshop" || identifier = "audition") {
+                    Send {Alt Down}f{Alt Up}
+                    Sleep 1000
+                    Send a
+                }
+                else if (identifier = "xmind") {
+                    Send ^+s
+                }
+                else if (identifier = "davinci_resolve"){
+                    SetTitleMatchMode, 2
+                    Send ^+s                    
+                    WinActivate, % target_save_dialog
+                    WinWaitActive, % target_save_dialog,, 15
+                    Send {End 2}
+                    Sleep 100
+                    Send % filename_suffix
+                    Sleep 300
+                    Send {Enter}
+                }
+
+[...]
+                ; Save Dialog
+                FormatTime, CurrentDateTime,, MM-dd-yy HH.mm.ss
+
+                if (identifier = "camtasia" || identifier = "notepad" || identifier = "xmind" || identifier = "illustrator" || identifier = "photoshop") {
+                    Targeted_Save_In_Save_Dialog(identifier, target_save_dialog, target_save_folder, " - autosave before shutdown (" CurrentDateTime ")" , "suffix", "direct") 
+                }
+
+                else if (identifier = "audition") {
+                    Targeted_Save_In_Save_Dialog(identifier, target_save_dialog, target_save_folder, " - autosave before shutdown (" CurrentDateTime ")" , "suffix", "direct", "no") 
+                }
+
+                ; Extra dialogs
+                if (identifier = "illustrator"){
+                    SetTitleMatchMode, 2
+                    WinActivate, % "Illustrator Options"
+                    WinWaitActive, % "Illustrator Options",, 5
+
+                    Send {Enter}
+                }
+
+                else if (identifier = "photoshop"){
+                    SetTitleMatchMode, 2
+                    WinActivate, % "Photoshop Format Options"
+                    WinWaitActive, % "Photoshop Format Options",, 5
+
+                    Send {Enter}
+                }
+
+[...]
+
+When the save file dialog appears, it is handled by the "Targeted_Save_In_Save_Dialog()" function, where it establishes first the target save folder and then it sets the filename depending if it exists and the mode
+~~~
+[...]
+
+if (directory) {
+    ControlFocus, ToolbarWindow324, %save_dialog_wintitle% ; Filename
+    ControlClick, ToolbarWindow324, %save_dialog_wintitle%,, right
+    sleep 1000
+    Send e ; To edit
+    Sleep, 1000
+    Send % directory
+    Sleep 1000
+    Send {Enter}
+    Sleep 1000
+}    
+
+[....]
+
+if (filename) {
+    ControlFocus, Edit1, %save_dialog_wintitle% ; Filename
+    ControlClick, Edit1, %save_dialog_wintitle%,, left
+
+    ; Alternative
+    ; ControlFocus, DirectUIHWND3, %save_dialog_wintitle%
+    ; ControlClick, DirectUIHWND3, %save_dialog_wintitle%,, left
+
+    if (filename_mode = "suffix") {
+        Send {End 2}
+        Sleep 1000
+        Send % filename
+        Sleep 1000
+    }
+}
+[...]
+~~~
+
+After all apps are saved in a specific folder with their corresponding filenames, the script proceeds to shutdown the PC with the command
+~~~
+Shutdown, 1
+~~~
+
+The script includes 2 tray icon buttons. One to launch the main process of safe exit and the other one to quit the script
+~~~
+Menu, Tray, NoStandard,
+Menu, Tray, Add, % "Safe Shutdown", Safe_Exit_Main
+Menu, Tray, Add, Quit, Quit
+~~~
 
 
 
