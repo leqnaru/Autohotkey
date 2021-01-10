@@ -1,8 +1,12 @@
 
-My goal with this is you can see many ways in what Autohotkey can help and get some ideas and insights of work you can do
+# Hello!
+This is a compilation of work I've done for other people and for myself. My goal with this is to provide you with ideas or Autohokey projects describing you the whole process and showing relevant code.
+I tried to write the most relevant and sumarized description of the processes that were done and implemented so you get an idea of the project.
+I hope you get anything out of this, either is an idea for your projects or any insights of development that were done to fullfil a goal.
 
-Some of the works I've done for people include the following:
-
+Notes:
+- "[...]" means there is extra code (often not relevant) above or below the displayed
+- I ommited the full code because I only wanted to focus on code that can be used as inspiration or get the sense of how things are implemented in a development
 
 
 # Categorize types of files into specific folders by metadata and extension
@@ -955,42 +959,42 @@ Time_Logic() {
 	}
 
 	; P2	11 - 15 seconds: Move the mouse through the small images
-	if (Check_Time() > Values_Process_2_Target_Timing && process_2_flag) {
+	else if (Check_Time() > Values_Process_2_Target_Timing && process_2_flag) {
 		Process_2()
 	}
 
 	; P3	16 - 20 seconds: Scroll down until the "product description" appears
-	if (Check_Time() > Values_Process_3_Target_Timing && process_3_flag) {
+	else if (Check_Time() > Values_Process_3_Target_Timing && process_3_flag) {
 		Process_3()
 	}
 
 	; P4	21 - 30 seconds: Scroll through the product description (a bit down, a bit up, a bit down again)
-	if (Check_Time() > Values_Process_4_Target_Timing && process_4_flag) {
+	else if (Check_Time() > Values_Process_4_Target_Timing && process_4_flag) {
 		Process_4()
 	}
 
 	; P5	31 - 35 seconds: Home key, to jump to the top
-	if (Check_Time() > Values_Process_5_Target_Timing && process_5_flag) {
+	else if (Check_Time() > Values_Process_5_Target_Timing && process_5_flag) {
 		Process_5()
 	}
 
 	; P6	36 - 40 seconds: Go through the other tabs one by one
-	if (Check_Time() > Values_Process_6_Target_Timing && process_6_flag) {
+	else if (Check_Time() > Values_Process_6_Target_Timing && process_6_flag) {
 		Process_6()
 	}
 
 	; P7	41 - 45 seconds: Switch to the first tab again
-	if (Check_Time() > Values_Process_7_Target_Timing && process_7_flag) {
+	else if (Check_Time() > Values_Process_7_Target_Timing && process_7_flag) {
 		Process_7()
 	}
 
 	; P8	46 - 50 seconds: Hold on the first tab
-	if (Check_Time() > Values_Process_8_Target_Timing && process_8_flag) {
+	else if (Check_Time() > Values_Process_8_Target_Timing && process_8_flag) {
 		Process_8()
 	}
 
 	; P9	50 - 60 seconds: Stop screen recording
-	if (Check_Time() > Values_Process_9_Target_Timing && process_9_flag) {
+	else if (Check_Time() > Values_Process_9_Target_Timing && process_9_flag) {
 		Process_9()
 
 		return ; Exit recursive function
@@ -1012,7 +1016,7 @@ Check_Time() {
 	return Round(ElapsedTime/1000, 2)	
 }
 ~~~
-Each process have their own actions that will be preiodically triggered by time and the flags. Examples of the processes include
+Each process have their own actions that will be preiodically triggered by time and the flags. Examples of the processes include the following:
 * Calculate the center of an area (where the images are) using coordinates and then moving the mouse to hover each individual image in order to preview it. The time hovering an image will be determined by a random number where the user set the minimum and maximum range in the INI file
 ~~~
 [...] 
@@ -1128,7 +1132,9 @@ Then it will get prepared for the next Excel row and resetting the flag values w
 
 
 
-
+# Thanks for reading!
+I hope this was helpful in any way and you get some ideas, either of implementation or coding examples to implement for your own or for other people.
+Cheers and have a great day!
 
 
 
