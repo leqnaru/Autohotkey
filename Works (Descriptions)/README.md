@@ -7,6 +7,9 @@ I hope you get anything out of this, either is an idea for your projects or any 
 Notes:
 - "[...]" means there is extra code (often not relevant) above or below the displayed
 - I ommited the full code because I only wanted to focus on code that can be used as inspiration or get the sense of how things are implemented in a development
+- In some cases I provided the full function or Timer if they are not very long
+- "Native function" means native Autohotkey functions
+- "Command" means Autohotkey commands
 
 
 # Categorize types of files into specific folders by metadata and extension
@@ -216,13 +219,64 @@ Keep track of the time an app or website is being used, use an INI file to store
 **Overall Process**\
 For this, it was used a nested array that will contain the data of the target apps and websites (like ID, WinTitle, Counters, Limit).\
 The array was designed so it can loop through all the values for each app and monitor the time values in the most reduced way.\
+The target time is set, for practical purposes, as integers (30, 60...) then converted into seconds by multiplying them by 60 and it is set a range from X to X, separated by a "|" symbol, so later it can be separated with the "StrSplit" native function and use the Random command to get a random number between that range.\
+~~~
+target_apps := {pubg: {wintitle:"ahk exe AndroidEmulator.exe", min_counter: 0, limit_reach: 0, target_time: "30|90", counter_ini_ref: "pubg_counter", reach_ini_ref: "pubg_limitreach"}
+    , deipio : {wintitle:"diep.io", min_counter: 0, limit_reach: 0, target_time: "30|90", counter_ini_ref: "deipio_counter", reach_ini_ref: "deipio_limitreach"}
+    , fortnite : {wintitle:"ahk_exe EpicGamesLauncher.exe", min_counter: 0, limit_reach: 0, target_time: "30|90", counter_ini_ref: "fortnite_counter", reach_ini_ref: "fortnite_limitreach"}
+    , pubg2 : {wintitle:"Gameloop", min_counter: 0, limit_reach: 0, target_time: "30|90", counter_ini_ref: "pubg2_counter", reach_ini_ref: "pubg2_limitreach"}}
+    
+for key, app_values in target_apps {
+    target_times_split := StrSplit(app_values["target_time"], "|")
+    Random, random_minutes, % target_times_split[1], % target_times_split[2]
+    app_values["target_time"] := random_minutes * 60 ; Minutes timse 60, to get the seconds
+}
+~~~
+
 When the script starts it will launch a Timer with 1-second interval. It will then use a For-Loop using the main array, inside it, first it reads and verifies that the stored main date is different from the current date. If they are different, it means the day changed, and then it will reset the counters and reach limit.\
 After that it will extract the counter values depending on the current app ID.\
 Now it will do the actual calculation of the time used by the program by using the "WinExists" command. If the windows does exist, it will be added an increment of 1, that represents the seconds used by the app.\
 After the counter was increased or not (in case the app wasn't being used), finally, it will verify if the current counter is greater or equal to the reach limich.\
-Note that reach time is set, for practical purposes, on integers (30, 60...) then converted into seconds by multiplying them by 60 and it is set a range from X to X, separated by a "|" symbol, so later it can be separated with the "StrSplit" function and use the Random command to get a random number between that range.\
 If the result is positive, it will then close the app and set the "limit_reach" value to 1 and store back at the INI file
+~~~
+App_Time_Limiter:
 
+for key, app_values in target_apps {
+    IniRead, registered_date,  %data_path%, Date, current_date
+    if (registered_date <> SubStr(A_now, 1, 8)){
+
+        ; Resets
+        IniWrite, % SubStr(A_now,1,8), %data_path%, Date, current_date  
+        app_values["min_counter"] := 0
+        IniWrite, % 0,  %data_path%, Counters, % app_values["counter_ini_ref"]
+
+        app_values["limit_reach"] != 0
+        IniWrite, % 0,  %data_path%, Counters, % app_values["reach_ini_ref"]
+
+    }
+    else {
+        ; MsgBox %  "Same day" 
+    }
+
+    IniRead, counter_value,  %data_path%, Counters, % app_values["counter_ini_ref"]
+    if (WinExist(app_values["wintitle"])) {
+        counter_value++
+        app_values["min_counter"] := counter_value
+        IniWrite, % app_values["min_counter"],  %data_path%, Counters, % app_values["counter_ini_ref"]
+        Sleep 1000
+    }
+
+    IniRead, reach_ini_value,  %data_path%, Counters, % app_values["reach_ini_ref"]
+
+    if (app_values["min_counter"] >= app_values["target_time"] ){
+        WinClose, % app_values["wintitle"]
+        app_values["limit_reach"] := 1
+        IniWrite, % app_values["limit_reach"],  %data_path%, Counters, % app_values["reach_ini_ref"]
+    }
+
+}
+return
+~~~
 
 # Use Neutron.ahk to create a UI to send data triggered by hotkeys to a Firebase database
 **Goal**\
