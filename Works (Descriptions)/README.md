@@ -15,6 +15,8 @@ Notes:
 # Categorize types of files into specific folders by metadata and extension
 **Goal**\
 Move specific types of file to a specific folder when they are added to a folder.\
+
+
 **Overall Process**\
 The script uses the "WatchFolder" library to keep track of the new added files in a folder. In the real-application, the folder targeted was the Downloads folder in the user PC. Note that this library works best then there is a single file added, sometimes it have troubles when multiple files are added at the same time, but not always.\
 When a new file is added to the target folder, it start a process to categorize it. It uses a function to retrieve the metadata values and narrowing the result to get the "Kind" metadata value, which is the one used to differentiate the type of file (Pictures, Music, Video). 
@@ -85,6 +87,7 @@ Login with user credentials in a Firebase database within a Neutron window and d
 * The user must be logged in order to be able to send the data with the hotkeys
 * This is a desktop complementation for a website called Callouts Evolved. Website: https://www.calloutsevolved.com/. This is a gaming team communication enhacement tool
 
+
 **Overall Process**\
 Neutron.ahk was used to create a login and a main page (that shows after login). There was done a Firebase setup to be able to conenct with the cloud database and validate the user credentials. After they are validated, the main page is displayed and now the user can use the various hotkeys to send specific data to Firebase.\
 The hotkeys are set to send strings like "Attack", "Defend", "Retreat" and others and are sent to the session where the user is currently connected to. To know the session, the UID that provides Firebase was used.\
@@ -142,6 +145,8 @@ The update on the cloud database is almost instantaneity, from 1 to 3 seconds ma
 # Small scripts for Premiere Pro
 **Goal**\
 Enhance video editing workflow with some small scripts.\
+
+
 **Overall Process**
 1. This quick and seamless continuous move playhead to cursor is one of the scripts I most use. I practically use it almost 90% of the time I am editing.\
 Move the playhead to the cursor position continuously. While the Right Mouse Button is held down, the script will send the Move Playhead to Cursor shortcut (that is assigned within Premiere; if it is set to "Control + Shift + J" it will send those) and a small delay of 50ms to ensure estability. There is added a screen area restriction for the script to work only within the Timeline panel.\
