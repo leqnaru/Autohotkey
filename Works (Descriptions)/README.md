@@ -778,20 +778,103 @@ Watch_For_New_PDF(path, changes) {
 ~~~
 
 Now, the "Print_PDF_File()" is where the magic happens, it receives the parameters to use in the command line and execute as shown below
-
+~~~
 Print_PDF_File(received_app_path, pdf_path, received_printer_name, received_driver_name := "", received_port_name :="", received_delay :="") {
     Run %ComSpec% /c " "%received_app_path%" "/S" "/T" "/O" "/H" "%pdf_path%" "%received_printer_name%" "%received_driver_name%" "%received_port_name%"" ,,hide 
     Sleep %received_delay%
     MsgBox %  "To delete PDF" 
     FileDelete, %pdf_path%    
 }
-
+~~~
 There is a delay in order to wait prudent time to give space for the PDF to fully print, then the PDF is deleted.
 
 
 
 
 
+
+# Quick search in Artgrid website from anywhere on the desktop
+**Goal**\
+Focus the search bar on Artgrid in Google Chrome whether it is open or not and verify if the tab already exists or created a new one
+
+**Overall Process**\
+First, the script will check if the Google Chrome process exists. If it doesn't exist, it will use the "Run" command to open a new instance of chrome and going to the Artgrid website.\
+If, on the other hand, the Google Chrome window does exist, it will activate it and call the "Find_Chrome_Tab()" within an "If" statement to look for the returned value (0 or 1).
+~~~
+!1::
+if (WinExist("ahk_exe chrome.exe")) {
+	WinActivate, ahk_exe chrome.exe
+	WinWaitActive, ahk_exe chrome.exe
+	if (!Find_Chrome_Tab("Artgrid.io", 15)) {
+		Run "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" https://www.artgrid.io/
+	}
+}
+else {
+	Run "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" https://www.artgrid.io/
+	WinActivate, ahk_exe chrome.exe
+	WinWaitActive, ahk_exe chrome.exe
+}
+
+Search_Process()	
+
+return
+~~~
+
+Inside the "Find_Chrome_Tab()" funciton, it will loop (by a predefined number of loops) through the existing Google Chrome tabs (using Control + Tab to change between tabs forward) and it use the "WinGetTitle, Title, A" command to look for a match in the title of "Artgrid.io". Because when you are navigating in Artgrid, and you are on home or in a search page, when you use the WinSpy, there will be always the "Artgrid.io" text on the window (tab) title.\
+If the tab with the match is found by using the "InStr()" native function it will then stop. If there was not any match, will launch a new tab with the Artgrid website. This looping through the existing tabs is done to avoid any duplicated tabs and not have to launch a new tab everytime the hotkey is called, but rather use an existing one, to save resources
+
+~~~
+Find_Chrome_Tab(tab_name, max_loop := 15) {
+    global
+    
+    Loop, % max_loop ; Max number of loops
+    {
+        WinGetTitle, Title, A  ; Get active window title (tab title)
+        if (InStr(Title, tab_name))
+        {
+            return 1 ; Success. Tab found
+        }
+        Send ^{Tab} ; Go to next Tab forward
+        Sleep, 50
+    }
+
+    return 0 ; Tab not found
+}
+~~~
+
+Now, with an active Artgrid website, it will start the "Search_Process()" function that will look for the Magnifier icon in the page by image references using the "FindText" library.\
+It was added a timeout to stop looking for the icon in case of any error or similar situation where the search icon is not found within, say, 10 seconds.\
+The image references are stored in an INI file and it was used an INI library that instantiates every INI value as a variable to ease the use of them
+~~~
+Search_Process() {
+	global
+	
+	search_bar := [Values_search_bar_ref_1, Values_search_bar_ref_2]
+	StartTime := A_TickCount
+	timeout := 10 ; Seconds
+	
+	Loop {
+		for a, reference in search_bar {
+			if (ok:=FindText(0-150000, 0-150000, 150000, 150000, 0, 0, reference))
+			{
+				CoordMode, Mouse
+				X:=ok.1.x, Y:=ok.1.y, Comment:=ok.1.id
+				Break, 2 ; Break the For and the Loop
+			}
+		}
+
+		ElapsedTime := A_TickCount - StartTime
+		Round(ElapsedTime / 1000)		
+		if (ElapsedTime > timeout * 1000) {
+			MsgBox %  "Search icon not found!"
+			Sleep 1000 
+			ToolTip
+			return
+		}
+	}
+	MouseClick, left, % X - 50, % Y, 3 ; Click 3 times to select all of the text if any and be able to type right away a new search term
+}
+~~~
 
 
 
