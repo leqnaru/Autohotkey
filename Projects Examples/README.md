@@ -1419,7 +1419,7 @@ There is a delay in order to wait prudent time to give space for the PDF to full
 
 
 # Thanks for reading!
-I hope this was helpful in any way and you get some ideas, either of implementation or coding examples to implement for your own or for other people.\
+I hope this was helpful in any way and you get some ideas, either of implementation or coding examples to use for your own or for other people.\
 Cheers and have a great day!
 
 
