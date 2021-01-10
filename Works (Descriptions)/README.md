@@ -141,7 +141,7 @@ The update on the cloud database is almost instantaneity, from 1 to 3 seconds ma
 
 # Small scripts for Premiere Pro
 **Goal**\
-Enhance video editing workflow
+Enhance video editing workflow with some small scripts.\
 **Overall Process**\
 1. This quick and seamless continuous move playhead to cursor is one of the scripts I most use. I practically use it almost 90% of the time I am editing.\
 Move the playhead to the cursor position continuously. While the Right Mouse Button is held down, the script will send the Move Playhead to Cursor shortcut (that is assigned within Premiere; if it is set to "Control + Shift + J" it will send those) and a small delay of 50ms to ensure estability. There is added a screen area restriction for the script to work only within the Timeline panel.\
@@ -913,7 +913,7 @@ The objective is to mimic a expiration date security measure of a script in orde
 
 # Restrict the use of apps by time per day and a random maximum limit number
 **Goal**\
-Keep track of the time an app or website is being used, use an INI file to store the values and when reach a random maximum number, close the app and reset the counters on the next day
+Keep track of the time an app or website is being used, use an INI file to store the values and when reach a random maximum number, close the app and reset the counters on the next day.\
 **Overall Process**\
 For this, it was used a nested array that will contain the data of the target apps and websites (like ID, WinTitle, Counters, Limit).\
 The array was designed so it can loop through all the values for each app and monitor the time values in the most reduced way.\
@@ -978,7 +978,7 @@ return
 
 # Track new circles coming from the right in a graph
 **Goal**\
-Trigger multiples clicks after a new circle appears from the left.\
+Trigger multiples clicks after a new circle appears from the right.\
 
 **Overall Process**\
 In a graph, regarding variable values, there are circles that appear over time and are going few pixels to the right as time passes. They indicate a specific value the user wants to keep track of.\
