@@ -549,7 +549,7 @@ save_dialogs := {camtasia: "Save As", notepad: "Save As", xmind: "Save As", davi
 autosave_folders := {camtasia: A_MyDocuments "\Autosaves", notepad: A_MyDocuments "\Autosaves", xmind: A_MyDocuments "\Autosaves", davinci_resolve: A_MyDocuments "\Autosaves", illustrator: A_MyDocuments "\Autosaves", photoshop: A_MyDocuments "\Autosaves", audition: A_MyDocuments "\Autosaves"}
 ~~~
 
-Then it validates the folders where the saved giles will be saved
+Then it validates the folders where the saved files will be saved
 ~~~
 Validate_Autosave_Folders(){
     global
@@ -738,6 +738,72 @@ Menu, Tray, NoStandard,
 Menu, Tray, Add, % "Safe Shutdown", Safe_Exit_Main
 Menu, Tray, Add, Quit, Quit
 ~~~
+
+
+
+# Print PDF's as they are added to a folder with Adobe Acrobat
+**Goal**\
+Monitor a folder and when a new PDF is added, print it with Adobe Acrobar through CMD by using "Run %ComSpec% /c"
+
+**Overall Process**\
+There is a printer data setup and other information as variables to manage the values easily later in the script.
+~~~
+target_folder := A_ScriptDir
+app_path := "C:\Program Files (x86)\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe"
+printer_name := "Brother QL-1110NWB"
+drivername := "Brother QL-1110NWB"
+portname := "BTH001"
+delay := 15000 ; 15 seconds
+~~~
+
+The script uses the "WatchFolder" library, which is used like this in the auto-execute section of the script
+~~~
+WatchFolder(target_folder, "Watch_For_New_PDF", , Watch := 1)
+~~~
+
+The "Watch_For_New_PDF()" function contains the monitoring for a PDF file, by looking into the string of "change.Name" and matching any ".pdf" that means the file is an PDF. Of course there can be a case where the file does include ".pdf" and it is not necesarily a PDF file type, which can be further adjusted to verify the full path of the file and extracting the metadata to confirm its type, but for practical purposes and where a ".pdf" in a file that is not an PDF is very unlikely for this user, it was done as described
+~~~
+Watch_For_New_PDF(path, changes) {
+    global
+    for k, change in changes {
+        ; 1 means new file was added
+        if (change.action = 1) {            
+            if (InStr(change.Name, ".pdf")) {
+                Print_PDF_File(app_path, change.Name, printer_name, drivername, portname, delay)
+            }            
+            return
+        }
+    }
+}
+~~~
+
+Now, the "Print_PDF_File()" is where the magic happens, it receives the parameters to use in the command line and execute as shown below
+
+Print_PDF_File(received_app_path, pdf_path, received_printer_name, received_driver_name := "", received_port_name :="", received_delay :="") {
+    Run %ComSpec% /c " "%received_app_path%" "/S" "/T" "/O" "/H" "%pdf_path%" "%received_printer_name%" "%received_driver_name%" "%received_port_name%"" ,,hide 
+    Sleep %received_delay%
+    MsgBox %  "To delete PDF" 
+    FileDelete, %pdf_path%    
+}
+
+There is a delay in order to wait prudent time to give space for the PDF to fully print, then the PDF is deleted.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
