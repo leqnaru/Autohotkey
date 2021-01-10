@@ -840,6 +840,7 @@ Menu, Tray, Add, Quit, Quit
 **Goal**\
 Keep track of the days after the first execution of the script and display a message
 
+
 **Overall Process**\
 This is a more an add-on to a main script, where the function "TriggerTrailStatus()" is called when the user wants to start or check the trail of the software.\
 The scripts uses an INI file to keep track of the date values. When this function is called, it will eaither create the default INI if it doesn't exist or check for the trial status.
@@ -914,6 +915,8 @@ The objective is to mimic a expiration date security measure of a script in orde
 # Restrict the use of apps by time per day and a random maximum limit number
 **Goal**\
 Keep track of the time an app or website is being used, use an INI file to store the values and when reach a random maximum number, close the app and reset the counters on the next day.\
+
+
 **Overall Process**\
 For this, it was used a nested array that will contain the data of the target apps and websites (like ID, WinTitle, Counters, Limit).\
 The array was designed so it can loop through all the values for each app and monitor the time values in the most reduced way.\
@@ -979,6 +982,7 @@ return
 # Track new circles coming from the right in a graph
 **Goal**\
 Trigger multiples clicks after a new circle appears from the right.\
+
 
 **Overall Process**\
 In a graph, regarding variable values, there are circles that appear over time and are going few pixels to the right as time passes. They indicate a specific value the user wants to keep track of.\
@@ -1094,6 +1098,7 @@ In other words, the scripts looks for new circles that appear on the right side 
 **Goal**\
 Create a reference (named after the highlighted word) and name of the current opened note in a target header
 
+
 **Overall Process**\
 The user highlights a reference with a structure like this "[[List Note|List 2]". The first process is to separate those two parts, the parts separated by the "|" (and sometimes it is "#" instead). For this, it is cleared the "[[" and "]]", any break line and using "StrSplit()" and store it in different variables, like this:
 
@@ -1175,6 +1180,8 @@ else {
 # Find matches in a web table column
 **Goal**\
 Find values of a table column to know if there is a match or not with values on a text file and create an Excel sheet with the results.\
+
+
 **Overall Process**\
 There is a text file that contains numbers in each line. Those numbers are the ones we want to keep track on a web table column to see if they are there (this means they are unavailable) or not (if not, they are available), they represent packages that are being transported through specific doors and the values change every minute.\
 Here it is used Selenium and Chrome. Like most of web scrapping development, first the values and correct pointers need to be discovered by going into the Console panel on Chrome (I prefer using Xpath over any other method to locate web elements; to me it's much more robust and reliable).\
@@ -1215,6 +1222,7 @@ Finally, the Excel file is saved and the file is ready to open, now the process 
 **Goal**\
 Mark and verify all the links in the CSV as a Starred place
 
+
 **Overall Process**\
 The scripts loops through a CSV which contains a link for specific places in Google Maps. Then by using the FindText library, it is searched for 5 key elements to complete the process to mark the palce on the link as a Starred Place.\
 There was included a fail-safe to check if the place was already marked or not, if so, dismiss it and continue with the next link and stop until all the links in the CSV are opened and marked.
@@ -1248,6 +1256,7 @@ StarredPlace_Mark(option := "") {
 # New Outlook email fill with Word Template
 **Goal**\
 To quickly select a template from different Word documents and put it on a new Outlook email.\
+
 
 **Overall Process**\
 First there is a verification to run Outlook as Administrator to avoid some possible errors of privileges while using COM. In the user desktop, there will be different shortcuts that each one of them point to a specific Word document.\
@@ -1355,6 +1364,7 @@ if (ok:=FindText(Step_X_1, Step_Y_1 + Y_Offset_1, Step_X_1 + X_Offset_2, Step_Y_
 # Print PDF's as they are added to a folder with Adobe Acrobat
 **Goal**\
 Monitor a folder and when a new PDF is added, print it with Adobe Acrobar through CMD by using "Run %ComSpec% /c".\
+
 
 **Overall Process**\
 There is a printer data setup and other information as variables to manage the values easily later in the script.
