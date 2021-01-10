@@ -76,7 +76,7 @@ This scripts provides a great folder and file structure, and it can be modified 
 
 
 
-# Use Neutron.ahk to create a UI to send data triggered by hotkeys to a Firebase database
+# Use Neutron.ahk to create a login page and send data triggered by hotkeys to a Firebase database
 **Goal**\
 Login with user credentials in a Firebase database within a Neutron window and depending hotkeys triggered, send data to specific parts of the database by using REST API's.\
 **Notes**.\
