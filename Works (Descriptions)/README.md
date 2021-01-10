@@ -1251,9 +1251,22 @@ To quickly select a template from different Word documents and put it on a new O
 
 **Overall Process**\
 First there is a verification to run Outlook as Administrator to avoid some possible errors of privileges while using COM. In the user desktop, there will be different shortcuts that each one of them point to a specific Word document.\
-Where the user selects one shortcut, it can do it normally or double-clicking it while holding the Shift key to open the document to modify it instead of launching the main process. The main process first connect to Word through COM, open the corresponding document, copy all of the contents and close the document.\
-Then it connects to Outlook through COM and by using the command
+When the user selects one shortcut, it can do it normally or double-clicking it while holding the Shift key to open the document to modify it instead of launching the main process.
 ~~~
+if (GetKeyState("Shift", "P")) { ; Hold "Shift" when double clicking the shortcut. "Alt" or "Ctrl" doesnt work
+    Run % target_document
+    return
+}
+~~~
+The main process first connect to Word through COM, open the corresponding document, copy all of the contents and close the document. Then it connects to Outlook through COM and by using the command
+~~~
+Try {
+    Outlook := ComObjActive("Outlook.Application")
+}
+Catch e {
+    Outlook := ComObjCreate("Outlook.Application")    
+    return
+}
 Outlook.Application.CreateItem(0)
 ~~~
 And this to launch a new email window
@@ -1261,11 +1274,28 @@ And this to launch a new email window
 Email.Display
 ~~~
 Then it navigates to focus on the body area and paste the contents of the template there.\
+~~~
+ControlSend, RichEdit20WPT5, {Tab 3}, ahk_exe OUTLOOK.EXE
+Sleep 1000
+ControlFocus, _WwG1, ahk_exe OUTLOOK.EXE
+ControlSend, _WwG1, {Home}, ahk_exe OUTLOOK.EXE
+Sleep 1000
+Send {Ctrl Down}v{Ctrl Up}
+~~~
 There is an additional script that validates the shortcuts for the templates, by having a predefined folder where the Word documents are, then it verify if the shortcut already exists on the desktop, if not, it creates a new one.\
+~~~
+Document_Templates_Path := A_ScriptDir "\Document_Templates\"
+
+Loop, Files,%Document_Templates_Path%*.*
+{
+    SplitPath, A_LoopFileFullPath, doc_filename_Ext, current_dir,, doc_filename
+    shortcut_path := A_Desktop "\" doc_filename ".lnk"
+    if (!FileExist(shortcut_path)) {
+        FileCreateShortcut,  % """" ahk_path """",  % shortcut_path, % """" Document_Templates_Path """" , % """" A_LoopFileFullPath """", "Email template"
+    }    
+}
+~~~
 To differ the target document to be opened, in the shortcuts, in the Target field, there is passed an argument that serves as differentiator where the main script looks for its value and execute the main process.
-
-
-
 
 
 # Change Font Type and Opacity quickly in Adobe Illustrator
