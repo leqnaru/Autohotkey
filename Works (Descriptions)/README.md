@@ -360,7 +360,6 @@ process_6_flag := true
 process_7_flag := true
 process_8_flag := true
 process_9_flag := true
-process_10_flag := true
 
 links_values := []
 current_row := 0
@@ -384,7 +383,7 @@ Loop, 5
 }
 ~~~
 It switches back to the first tab, start recording with OBS assign a time variable as reference to make further calculation with time and start the "Time_Logic()" function.\
-Note that in order to get Autohotkey working with OBS, you need to setup a delay between the sent keys to let OBS capture the keys, otherwise it probably won't work. I first relied on using the ACC Viewer to start and stop recording, and I was able to do it, but then I found this link, giving me the magic answer to just  add some delays between the Send Commands and it worked very well! Here is the link: ; https://obsproject.com/forum/threads/ahk-not-working-with-obs-studio.70321/
+Note that in order to get Autohotkey working with OBS, you need to setup a delay between the sent keys to let OBS capture the keys, otherwise it probably won't work. I first relied on using the ACC Library to start and stop recording, and I was able to do it, but then I found this link, giving me the magic answer to just  add some delays between the Send Commands and it worked very well! Here is the link: ; https://obsproject.com/forum/threads/ahk-not-working-with-obs-studio.70321/
 ~~~
 Send ^1 ; Hotkey to go to first tab
 Sleep 1000 
