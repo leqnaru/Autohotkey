@@ -84,6 +84,31 @@ Mark and verify all the links in the CSV as a Starred place
 Looping through a CSV which contains a link for specific places in Google Maps.\
 By using the FindText library, it is searched for 5 key elements to complete the process to mark the palce on the link as a Starred Place.\
 There was included a fail-safe to check if the place was already marked or not, if so, continue with the next link and stop until all the links in the CSV are opened and marked.
+~~~
+StarredPlace_Mark(option := "") {
+    global
+
+    directions_referece := WaitForFindTextReference_Endless_Custom(Directions_Button_array, , "Directions_Button")
+    saved_place_reference := WaitForFindTextReference(Saved_Place_array, , "Saved_Place", 1)
+
+    if (IsObject(saved_place_reference)) {
+
+        if (option = "dismiss_saved") {
+            StarredPlace_Dismiss_Mark()
+        }
+        else {
+            Tooltip Place Already Starred! Going to next one...
+            Sleep 1000 
+            Tooltip
+        }        
+        return
+    } 
+    
+    save_reference := WaitForFindTextReference_Endless_Custom_Click(Save_Button_array, , "Save_Button")
+    starred_place_reference := WaitForFindTextReference_Endless_Custom_Click(Starred_Place_Button_array, , "Starred_Place_Button")
+    WaitForFindTextReference_Endless_Custom(Saved_Place_array, , "Saved Place After Starred")
+}
+~~~
 
 
 # New Outlook email fill with Word Template
