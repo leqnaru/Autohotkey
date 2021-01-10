@@ -14,7 +14,7 @@ Notes:
 
 # Categorize types of files into specific folders by metadata and extension
 **Goal**\
-Move specific types of file to a specific folder when they are added to a folder.\
+Move specific types of file to a specific folder when they are added to a folder.
 
 
 **Overall Process**\
@@ -80,7 +80,7 @@ This scripts provides a great folder and file structure, and it can be modified 
 
 # Use Neutron.ahk to create a login page and send data triggered by hotkeys to a Firebase database
 **Goal**\
-Login with user credentials in a Firebase database within a Neutron window and depending hotkeys triggered, send data to specific parts of the database by using REST API's.\
+Login with user credentials in a Firebase database within a Neutron window and depending hotkeys triggered, send data to specific parts of the database by using REST API's.
 
 
 **Notes**
