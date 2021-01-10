@@ -1174,7 +1174,7 @@ else {
 
 # Find matches in a web table column
 **Goal**\
-Find values of a table column to know if there is a match or not with values on a text file and create an Excel sheet with the results
+Find values of a table column to know if there is a match or not with values on a text file and create an Excel sheet with the results.\
 **Overall Process**\
 There is a text file that contains numbers in each line. Those numbers are the ones we want to keep track on a web table column to see if they are there (this means they are unavailable) or not (if not, they are available), they represent packages that are being transported through specific doors and the values change every minute.\
 Here it is used Selenium and Chrome. Like most of web scrapping development, first the values and correct pointers need to be discovered by going into the Console panel on Chrome (I prefer using Xpath over any other method to locate web elements; to me it's much more robust and reliable).\
@@ -1182,7 +1182,7 @@ After the XPaths are located, it is used this command
 ~~~
 row_total := oChrome.findElementsByXpath("//*[@id='dashboard']/tbody/tr").Count()
 ~~~
-to get the total of rows on table to do a proper Loop with the same value (So we don't over or under loop).\
+To get the total of rows on table to do a proper Loop with the same value (So we don't over or under loop).\
 There is a process to validate the data with RegEx, since sometimes the number is accompanied by letters, so the bare numbers are extracted. After that there is a comparison of that value with the values on the text file, and there is where we determine if the value (which represents the door number in the column) is available or not.\
 It finishes the looping through all the rows and we get the exact values that we want, then it's time to create the Excel file.\
 First there is deleted all of the previous files created because only the latest is relevant. There is a process to name the file using the date and time of the creation. \
@@ -1211,50 +1211,13 @@ Finally, the Excel file is saved and the file is ready to open, now the process 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Starring Google Maps places
 **Goal**\
 Mark and verify all the links in the CSV as a Starred place
 
 **Overall Process**\
-Looping through a CSV which contains a link for specific places in Google Maps.\
-By using the FindText library, it is searched for 5 key elements to complete the process to mark the palce on the link as a Starred Place.\
-There was included a fail-safe to check if the place was already marked or not, if so, continue with the next link and stop until all the links in the CSV are opened and marked.
+The scripts loops through a CSV which contains a link for specific places in Google Maps. Then by using the FindText library, it is searched for 5 key elements to complete the process to mark the palce on the link as a Starred Place.\
+There was included a fail-safe to check if the place was already marked or not, if so, dismiss it and continue with the next link and stop until all the links in the CSV are opened and marked.
 ~~~
 StarredPlace_Mark(option := "") {
     global
@@ -1284,7 +1247,7 @@ StarredPlace_Mark(option := "") {
 
 # New Outlook email fill with Word Template
 **Goal**\
-To quickly select a template from different Word documents and put it on a new Outlook email
+To quickly select a template from different Word documents and put it on a new Outlook email.\
 
 **Overall Process**\
 First there is a verification to run Outlook as Administrator to avoid some possible errors of privileges while using COM. In the user desktop, there will be different shortcuts that each one of them point to a specific Word document.\
@@ -1307,7 +1270,7 @@ To differ the target document to be opened, in the shortcuts, in the Target fiel
 
 # Change Font Type and Opacity quickly in Adobe Illustrator
 **Goal**\
-Pressing different hotkeys that are assigned for specific Font Types and a hotkey to display the opacity slider quickly
+Pressing different hotkeys that are assigned for specific Font Types and a hotkey to display the opacity slider quickly.\
 
 **Overall Process**\
 It is used the "FindText" library for key image references on Illustrator to perform clicks and focus elements.
@@ -1359,13 +1322,9 @@ if (ok:=FindText(Step_X_1, Step_Y_1 + Y_Offset_1, Step_X_1 + X_Offset_2, Step_Y_
 }
 ~~~
 
-
-
-
-
 # Print PDF's as they are added to a folder with Adobe Acrobat
 **Goal**\
-Monitor a folder and when a new PDF is added, print it with Adobe Acrobar through CMD by using "Run %ComSpec% /c"
+Monitor a folder and when a new PDF is added, print it with Adobe Acrobar through CMD by using "Run %ComSpec% /c".\
 
 **Overall Process**\
 There is a printer data setup and other information as variables to manage the values easily later in the script.
