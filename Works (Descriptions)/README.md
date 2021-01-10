@@ -878,6 +878,253 @@ Search_Process() {
 
 
 
+# Perform specific actions overtime (time based triggers). Using Excel and INI data and OBS software
+**Goal**\
+Execute different types of processes after a specific time-window, for example, trigger one action 15 seconds after the script starts and another after 50 seconds. This, by also using Excel information to open links and starting and stopping OBS record (to record the script actions) and save it into a specific folder
+
+**Overall Process**\
+The environment is an Excel file that contains product information from Amazon, a main link and 5 links of similar products. The script will go thorugh each one of the products, performing specific actions inside the product pages and opening the similar products links.\
+The script first connects with Excel using COM and using a function from Joe Glines in his Excel Library called "XL_Find_Headers_in_Cols_Number".
+~~~
+headers_numbers:=XL_Find_Headers_in_Cols_Number(XL,[Values_Product_Link_Header_Name, Values_Brand_Name_Header_Name, Values_Images_Type_Header_Name, Values_Link_1_Header_Name,Values_Link_2_Header_Name,Values_Link_3_Header_Name,Values_Link_4_Header_Name,Values_Link_5_Header_Name]) ; Send search terms as an array
+; MsgBox %  "headers_numbers: " headers_numbers[Values_Images_Type_Header_Name] ; Test
+~~~
+
+Because this is a time-based script, to ease the triggers it was setup flags for each process, that later they will serve to differentiate and trigger the corresponding action
+~~~
+main_process := true
+process_1_flag := true
+process_2_flag := true
+process_3_flag := true
+process_4_flag := true
+process_5_flag := true
+process_6_flag := true
+process_7_flag := true
+process_8_flag := true
+process_9_flag := true
+process_10_flag := true
+
+links_values := []
+current_row := 0
+
+~~~
+
+Inside the main process, the script then finds the total number of items in the table (last row number) with:
+~~~
+last_row_number := XL.Application.ActiveSheet.Cells(headers_numbers[Values_Product_Link_Header_Name]).EntireColumn.Find("*",,,, 1, 2).Row 
+~~~
+Then it starts to loop one by one (row by row). First, it opens the main product link and then the 5 similar product links with another loop and adding them into an array.
+~~~
+product_link_value := XL.Application.ActiveSheet.Cells(current_row, headers_numbers[Values_Product_Link_Header_Name]).Value
+Run % "chrome.exe " product_link_value
+Sleep 1000 
+links_values := []
+Loop, 5 
+{ 
+	links_values.Insert("Link_" A_Index, XL.Application.ActiveSheet.Cells(current_row, headers_numbers[Values_Link_%A_Index%_Header_Name]).Value)
+	Run % "chrome.exe " links_values["Link_" A_Index]
+}
+~~~
+It switches back to the first tab, start recording with OBS assign a time variable as reference to make further calculation with time and start the "Time_Logic()" function.\
+Note that in order to get Autohotkey working with OBS, you need to setup a delay between the sent keys to let OBS capture the keys, otherwise it probably won't work. I first relied on using the ACC Viewer to start and stop recording, and I was able to do it, but then I found this link, giving me the magic answer to just  add some delays between the Send Commands and it worked very well! Here is the link: ; https://obsproject.com/forum/threads/ahk-not-working-with-obs-studio.70321/
+~~~
+Send ^1 ; Hotkey to go to first tab
+Sleep 1000 
+
+; Start OBS record
+Send {F8 Down} ; Native OBS shortcut to start recording
+Sleep 500 
+Send {F8 Up}
+
+; Initiate time
+StartTime := A_TickCount ; Save the current "A_TickCount" to "StartTime"
+Time_Logic()
+
+~~~
+
+Now, it starts a recursive function that will call a "Check_Time()" function that will monitor the time passed and will make use of stored timings in the INI file and flags to determine what process is the next one and execute only that one
+
+~~~
+Time_Logic() {
+	global
+	CoordMode, Mouse, Screen
+
+	; P1	0 - 10 seconds: Stay with the mouse centered, not moving
+	if (Check_Time() > Values_Process_1_Target_Timing && process_1_flag) { 
+		Process_1() 
+	}
+
+	; P2	11 - 15 seconds: Move the mouse through the small images
+	if (Check_Time() > Values_Process_2_Target_Timing && process_2_flag) {
+		Process_2()
+	}
+
+	; P3	16 - 20 seconds: Scroll down until the "product description" appears
+	if (Check_Time() > Values_Process_3_Target_Timing && process_3_flag) {
+		Process_3()
+	}
+
+	; P4	21 - 30 seconds: Scroll through the product description (a bit down, a bit up, a bit down again)
+	if (Check_Time() > Values_Process_4_Target_Timing && process_4_flag) {
+		Process_4()
+	}
+
+	; P5	31 - 35 seconds: Home key, to jump to the top
+	if (Check_Time() > Values_Process_5_Target_Timing && process_5_flag) {
+		Process_5()
+	}
+
+	; P6	36 - 40 seconds: Go through the other tabs one by one
+	if (Check_Time() > Values_Process_6_Target_Timing && process_6_flag) {
+		Process_6()
+	}
+
+	; P7	41 - 45 seconds: Switch to the first tab again
+	if (Check_Time() > Values_Process_7_Target_Timing && process_7_flag) {
+		Process_7()
+	}
+
+	; P8	46 - 50 seconds: Hold on the first tab
+	if (Check_Time() > Values_Process_8_Target_Timing && process_8_flag) {
+		Process_8()
+	}
+
+	; P9	50 - 60 seconds: Stop screen recording
+	if (Check_Time() > Values_Process_9_Target_Timing && process_9_flag) {
+		Process_9()
+
+		return ; Exit recursive function
+	}
+
+	Time_Logic()	
+}
+
+~~~
+The "Check_Time()" function looks like this, is a simple time difference in seconds and then rounded up with the "Round" native function
+~~~
+Check_Time() {
+	global
+
+	ElapsedTime := A_TickCount - StartTime ; Evaluate the difference between the current A_TickCount and the StartTime, it will result in the elapsed time
+	; MsgBox,  %  "Milliseconds have elapsed: " ElapsedTime ; Show the results in milliseconds and seconds
+	; 	. "`nSeconds passed: " Round(ElapsedTime/1000, 2) ; Calculate the seconds from the milisecconds. 1 second = 1000. CL-1
+
+	return Round(ElapsedTime/1000, 2)	
+}
+~~~
+Each process have their own actions that will be preiodically triggered by time and the flags. Examples of the processes include
+* Calculate the center of an area (where the images are) using coordinates and then moving the mouse to hover each individual image in order to preview it. The time hovering an image will be determined by a random number where the user set the minimum and maximum range in the INI file
+~~~
+[...] 
+if (Check_Image_Type() = "vertical") {
+	; Coordinates
+	first_image_coordinates_values := StrSplit(Values_First_Amazon_Image_Coordenates_Vertical, ",")
+	second_image_coordinates_values := StrSplit(Values_Second_Amazon_Image_Coordenates_Vertical, ",")
+
+	first_center := Get_Center_Of_Rectangle(first_image_coordinates_values)
+	second_center := Get_Center_Of_Rectangle(second_image_coordinates_values)
+	images_offset := second_center[2] - first_center[2]
+
+	move_mouse := first_center.Clone()
+
+	; Go to first image
+	MouseMove, % first_center[1], % first_center[2]
+
+	Loop, % Values_Maximum_Image_Number - 1 ; Because above was moved to the first image already
+{	
+		Random, random_mod_delay, % Values_Seconds_Delay_Per_Image_Min, % Values_Seconds_Delay_Per_Image_Max
+
+		delay_mod := Values_Seconds_Delay_Per_Image + random_mod_delay
+			
+		Sleep % delay_mod * 1000
+		move_mouse[1] := move_mouse[1]
+		move_mouse[2] := move_mouse[2] + images_offset ; Increase the value to each iteration and save it
+		MouseMove, % move_mouse[1], % move_mouse[2]		
+	}
+}
+[...]
+~~~
+- Retrieving data from the Excel file to differ the types of image distribution the script will work with, if horizontal or vertical
+~~~
+Check_Image_Type() {
+	global
+
+	; MsgBox %  "" headers_numbers[Values_Images_Type_Header_Name]
+	; current_row := 3
+	images_type_value := XL.Application.ActiveSheet.Cells(current_row, headers_numbers[Values_Images_Type_Header_Name]).Value
+
+	; MsgBox %  headers_numbers[Values_Images_Type_Header_Name] " " images_type_value
+
+	if (images_type_value = "V" || images_type_value = "v") { 
+		return "vertical"	
+	}
+	else if (images_type_value = "H" || images_type_value = "h") {
+		return "horizontal"	
+	}
+
+	else {
+		MsgBox %  "Incorrect Images Type" 
+	}
+	
+}
+~~~
+* Scroll down with a random "force" (which is the times of the WheelDown sent) and stop until there is a image reference that serves as a limit, meaning, that when that image is shown on the page, it means the scroll reached the end of the desired area to display.
+~~~
+[...]
+scroll_limit_references := [Values_Scroll_Limit_Reference_1, Values_Scroll_Limit_Reference_2]
+
+	Loop {
+		Random, random_mod, % Values_Scroll_Limit_Force_Min, % Values_Scroll_Limit_Force_Max
+		scroll_force := Values_Scroll_Limit_Force + random_mod
+
+		Send {WheelDown %scroll_force%}
+
+		Random, random_mod_scroll_delay, % Values_Scroll_Limit_Delay_Min, % Values_Scroll_Limit_Delay_Max
+		scroll_delay := Values_Scroll_Limit_Delay + random_mod_scroll_delay
+
+		Sleep % scroll_delay * 1000
+
+		for a, reference in scroll_limit_references {
+			; MsgBox % a "-" reference
+
+			if (ok:=FindText(0-150000, 0-150000, 150000, 150000, 0, 0, reference))
+			{
+				Break, 2 ; Break the For-Loop and the Loop
+			}
+		}	
+	}
+[...]
+~~~
+
+The recursion on the "Time_Logic()" funciton will stop until it reaches the last process (Process 9), then it stop the recording and rename the newest OBS recording as the name of the Brand, which is on the Excel sheet, and moving the file to a specific folder. Here is how the "Process_9" and the "Renaming_Process()" functions look
+~~~
+
+Process_9() {
+	global
+	process_9_flag := false
+
+	WinClose, ahk_exe chrome.exe
+	Stop_Record()
+
+	Renaming_Process()
+	Reset_Processes_Flags()
+
+}
+
+
+Renaming_Process() {
+	global
+	file_path := FF_Check_For_Files_Quantity(Values_Raw_Folder, 1)
+	brand_name_value := XL.Application.ActiveSheet.Cells(current_row, headers_numbers[Values_Brand_Name_Header_Name]).Value
+	FormatTime, CurrentDate,, MM.dd.yyyy
+	FormatTime, CurrentTime,,  HH.mm
+	FileMove, % file_path[1,"path"] ,  % Values_Target_Folder "\" brand_name_value "." file_path[1,"ext"]	
+}
+
+~~~
+
+Then it will get prepared for the next Excel row and resetting the flag values with "Reset_Processes_Flags()" to set them all to true, so it can continue with the next product fresh and start the main process again with that new product
+
 
 
 
