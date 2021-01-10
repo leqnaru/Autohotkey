@@ -1127,36 +1127,60 @@ Renaming_Process() {
 
 ~~~
 
-Then it will get prepared for the next Excel row and resetting the flag values with "Reset_Processes_Flags()" to set them all to true, so it can continue with the next product fresh and start the main process again with that new product
+Then it will get prepared for the next Excel row and resetting the flag values with "Reset_Processes_Flags()" to set them all to true, so it can continue with the next product fresh and start the main process again with that new product.\ 
+The INI values that the user can change are the following (this is how it looks when you open up the INI file):
+~~~
+config.ini:
+
+[Values]
+Starting_Index = 1
+Product_Link_Header_Name=Product Link
+Brand_Name_Header_Name=Brand Name
+Images_Type_Header_Name=Images Type	
+Link_1_Header_Name =link1
+Link_2_Header_Name =link2
+Link_3_Header_Name =link3
+Link_4_Header_Name =link4
+Link_5_Header_Name =link5
+First_Amazon_Image_Coordenates_Vertical = 212,216,255,259
+Second_Amazon_Image_Coordenates_Vertical = 213,266,256,307
+First_Amazon_Image_Coordenates_Horizontal = 421,800,466,842
+Second_Amazon_Image_Coordenates_Horizontal = 470,800,512,841
+Maximum_Image_Number= 7
+Seconds_Delay_Per_Tab=0.7
+Seconds_Delay_Per_Tab_Min=-0.5
+Seconds_Delay_Per_Tab_Max=0.5
+Seconds_Delay_Per_Image=1
+Seconds_Delay_Per_Image_Min=-1.0
+Seconds_Delay_Per_Image_Max=1.0
+Scroll_Limit_Reference_1=|<>*146$71.00000000000000000000000000000000000000000000000000003s0000000000Dw0000000000ss0000000001kk0000080M03VU00M03y3y07700Dy7TwDw07Q00TwDksw00Dk000wSVls00T3U00sx3Vs01z7001lu73y07DC03zXoC1y0QCM0Dz7cQ0Q0sDk0QCDEs0s1sD01sQSVlVk1sz03lsx3XzU3zzU3zlu73y03zD03vXk00000000000000000000000000000000000000000000001
+Scroll_Limit_Reference_2=|<>*139$71.00000000000000M07000000001s0C00000003nk0Q00000007300s0000000C001k000000Uw003U0000011kQ7z0zUTkDu3UsTy3zVzkzqD1lsQC77XlkAQ3XUsQCC3XUMs771ksQQ77UtkCC3VzssC7tr0QQ73zlkQ7vi0ssC703Us1rw1lsQC071k1rk3XtsS2D7W7DU73zkTwDy7yC0C3tUTsDsDs00000000000000000000000000000000000000000000000000000000000000000000001
+Scroll_Limit_Force=7
+Scroll_Limit_Force_Min=-5
+Scroll_Limit_Force_Max=5
+Scroll_Limit_Delay=0.5
+Scroll_Limit_Delay_Min=0
+Scroll_Limit_Delay_Max=1.0
+Process_1_Target_Timing = 0
+Process_2_Target_Timing = 11
+Process_3_Target_Timing = 16
+Process_4_Target_Timing = 21
+Process_5_Target_Timing = 31
+Process_6_Target_Timing = 36
+Process_7_Target_Timing = 41
+Process_8_Target_Timing = 46
+Process_9_Target_Timing = 50
+Raw_Folder=C:\Users\User\Documents\Captured_Videos\Raw
+Target_Folder=C:\Users\User\Documents\Captured_Videos\Coded
+~~~
+
 
 
 
 
 # Thanks for reading!
-I hope this was helpful in any way and you get some ideas, either of implementation or coding examples to implement for your own or for other people.
+I hope this was helpful in any way and you get some ideas, either of implementation or coding examples to implement for your own or for other people.\
 Cheers and have a great day!
-
-
-
-
-
-
-
-
-# Title
-**Goal**\
-aaa
-
-**Overall Process**\
-aaa
-
-
-
-
-
-
-
-
 
 
 
