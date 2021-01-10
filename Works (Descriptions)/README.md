@@ -146,7 +146,7 @@ The update on the cloud database is almost instantaneity, from 1 to 3 seconds ma
 
 # Small scripts for Premiere Pro
 **Goal**\
-Enhance video editing workflow with some small scripts.\
+Enhance video editing workflow with some small scripts.
 
 
 **Overall Process**
@@ -921,7 +921,7 @@ The objective is to mimic a expiration date security measure of a script in orde
 
 # Restrict the use of apps by time per day and a random maximum limit number
 **Goal**\
-Keep track of the time an app or website is being used, use an INI file to store the values and when reach a random maximum number, close the app and reset the counters on the next day.\
+Keep track of the time an app or website is being used, use an INI file to store the values and when reach a random maximum number, close the app and reset the counters on the next day.
 
 
 **Overall Process**\
@@ -988,7 +988,7 @@ return
 
 # Track new circles coming from the right in a graph
 **Goal**\
-Trigger multiples clicks after a new circle appears from the right.\
+Trigger multiples clicks after a new circle appears from the right.
 
 
 **Overall Process**\
@@ -1186,7 +1186,7 @@ else {
 
 # Find matches in a web table column
 **Goal**\
-Find values of a table column to know if there is a match or not with values on a text file and create an Excel sheet with the results.\
+Find values of a table column to know if there is a match or not with values on a text file and create an Excel sheet with the results.
 
 
 **Overall Process**\
@@ -1262,7 +1262,7 @@ StarredPlace_Mark(option := "") {
 
 # New Outlook email fill with Word Template
 **Goal**\
-To quickly select a template from different Word documents and put it on a new Outlook email.\
+To quickly select a template from different Word documents and put it on a new Outlook email.
 
 
 **Overall Process**\
@@ -1316,7 +1316,8 @@ To differ the target document to be opened, in the shortcuts, in the Target fiel
 
 # Change Font Type and Opacity quickly in Adobe Illustrator
 **Goal**\
-Pressing different hotkeys that are assigned for specific Font Types and a hotkey to display the opacity slider quickly.\
+Pressing different hotkeys that are assigned for specific Font Types and a hotkey to display the opacity slider quickly.
+
 
 **Overall Process**\
 It is used the "FindText" library for key image references on Illustrator to perform clicks and focus elements.
@@ -1370,7 +1371,7 @@ if (ok:=FindText(Step_X_1, Step_Y_1 + Y_Offset_1, Step_X_1 + X_Offset_2, Step_Y_
 
 # Print PDF's as they are added to a folder with Adobe Acrobat
 **Goal**\
-Monitor a folder and when a new PDF is added, print it with Adobe Acrobar through CMD by using "Run %ComSpec% /c".\
+Monitor a folder and when a new PDF is added, print it with Adobe Acrobar through CMD by using "Run %ComSpec% /c".
 
 
 **Overall Process**\
