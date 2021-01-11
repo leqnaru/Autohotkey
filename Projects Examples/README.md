@@ -1369,7 +1369,7 @@ if (ok:=FindText(Step_X_1, Step_Y_1 + Y_Offset_1, Step_X_1 + X_Offset_2, Step_Y_
 }
 ~~~
 
-# Print PDF's as they are added to a folder with Adobe Acrobat
+# Print PDF's with Adobe Acrobat as they are added to a folder 
 **Goal**\
 Monitor a folder and when a new PDF is added, print it with Adobe Acrobar through CMD by using "Run %ComSpec% /c".
 
