@@ -560,7 +560,7 @@ scroll_limit_references := [Values_Scroll_Limit_Reference_1, Values_Scroll_Limit
 [...]
 ~~~
 
-The recursion on the "Time_Logic()" funciton will stop until it reaches the last process (Process 9), then it stop the recording and rename the newest OBS recording as the name of the Brand, which is on the Excel sheet, and moving the file to a specific folder. Here is how the "Process_9" and the "Renaming_Process()" functions look
+The recursion on the "Time_Logic()" function will stop until it reaches the last process (Process 9), then it stop the recording and rename the newest OBS recording as the name of the Brand, which is on the Excel sheet, and moving the file to a specific folder. Here is how the "Process_9" and the "Renaming_Process()" functions look
 ~~~
 
 Process_9() {
