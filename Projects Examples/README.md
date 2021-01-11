@@ -5,7 +5,7 @@ I tried to write the most relevant and sumarized description of the processes th
 I hope you get any type of insight out of this or any idea for your projects with examples of development that was done to fullfil a goal.
 
 Notes:
-- "[...]" means there is extra code (often not relevant) above or below the displayed
+- "[...]" means there is extra code (often not relevant) above or below the displayed code
 - I ommited the full code because I only wanted to focus on code that can be used as inspiration or get the sense of how things are implemented in a development
 - In some cases I provided the full function or Timer if they are not very long
 - "Native function" means native Autohotkey functions
