@@ -144,7 +144,7 @@ The update on the cloud database is almost instantaneity, from 1 to 3 seconds ma
 
 
 
-# Small scripts for Premiere Pro
+# Small scripts for Adobe Premiere Pro
 **Goal**\
 Enhance video editing workflow with some small scripts.
 
