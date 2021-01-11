@@ -254,7 +254,7 @@ KeyWait, CapsLock
 Send {Blind}{Ctrl Up}{Shift Up}{Alt Up}
 return
 ~~~
-5. Add the Wrapper Effect. This was a small script that used the "FindText" library to click on image references to quickly add the Wrapper Effect. This is now irrelevant because a plugin launched in the end of 2020 called Excalibur allows to have shortcuts to apply specific effects, amog many other increible things to speed up the Premiere Pro work flow. Take a look at this video for more information: https://youtu.be/C2KAhbt9KKs or https://youtu.be/PDNSFJ8QnjQ
+5. Add the Wrapper Effect. This was a small script that used the "FindText" library to click on image references to quickly add the Wrapper Effect. This is now irrelevant because a plugin launched in the end of 2020 called Excalibur allows to have shortcuts to apply specific effects, among many other increible things to speed up the Premiere Pro workflow. Take a look at this video for more information: https://youtu.be/C2KAhbt9KKs or https://youtu.be/PDNSFJ8QnjQ
 
 
 
